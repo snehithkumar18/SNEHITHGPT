@@ -10,6 +10,7 @@ load_dotenv()
 os.environ["SSL_CERT_FILE"] = certifi.where()
 os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
+from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import SystemMessage
 from langgraph.graph import StateGraph, START, MessagesState
@@ -20,15 +21,18 @@ from tools import tools
 Path("data").mkdir(exist_ok=True)
 
 
-# Update default and allowed models to use Gemini 3.8
-DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+# Default model: Groq 120B (Ultra fast, high uptime, zero 503 errors)
+DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "openai/gpt-oss-120b")
 
 ALLOWED_MODELS = {
+    # Groq (Lightning-fast, zero 503 errors)
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+    "qwen/qwen3.8-27b",
+    # Google Gemini (Alternative)
     "gemini-3.8-flash",
     "gemini-3.8-pro",
-    "gemini-2.5-flash",      # Legacy fallback
-    "gemini-2.5-pro",        # Legacy fallback
-    "gemini-2.5-flash-lite", # Legacy fallback
+    "gemini-2.5-flash",
 }
 
 
@@ -40,13 +44,13 @@ You can:
 1. Answer normal questions.
 2. Use tools when needed.
 3. Search uploaded documents using the RAG tool.
-4. Search the web for latest/current information using Tavily Search.
+4. Search the web for latest/current information using web search.
 5. Remember important user information using the memory tool.
 6. Recall memory when useful.
 7. Use calculator for math.
 
 Rules:
-- If the user asks about latest news, current events, recent updates, today's information, current prices, current people, current versions, new releases, or anything time-sensitive, use Tavily Search.
+- If the user asks about latest news, current events, recent updates, today's information, current prices, current people, current versions, new releases, or anything time-sensitive, use web_search.
 - If the user asks about an uploaded document, use search_uploaded_documents.
 - If the user asks you to remember something, use remember_this.
 - If the user asks about previous preferences or saved facts, use recall_memory.
@@ -76,20 +80,38 @@ def normalize_model_name(model_name: str | None) -> str:
 
 
 
-def build_agent(model_name: str):
+def get_llm(model_name: str):
     """
-    Build one LangGraph agent for a selected Gemini model.
+    Instantiate the appropriate LLM provider (Groq or Google Gemini).
     """
+    selected = normalize_model_name(model_name)
+    groq_key = os.getenv("GROQ_API_KEY", "").strip()
+    google_key = os.getenv("GOOGLE_API_KEY", "").strip()
 
-    selected_model = normalize_model_name(model_name)
+    if selected.startswith(("openai/", "qwen/", "llama", "mixtral")) or (groq_key and not selected.startswith("gemini")):
+        return ChatGroq(
+            model=selected,
+            api_key=groq_key,
+            temperature=0.3,
+            streaming=True
+        )
 
-    # Initialize ChatGoogleGenerativeAI
-    llm = ChatGoogleGenerativeAI(
-        model=selected_model,
+    return ChatGoogleGenerativeAI(
+        model=selected,
+        api_key=google_key,
         temperature=0.3,
         streaming=True
     )
 
+
+def build_agent(model_name: str):
+    """
+    Build one LangGraph agent for a selected model (Groq or Gemini).
+    """
+
+    selected_model = normalize_model_name(model_name)
+
+    llm = get_llm(selected_model)
     llm_with_tools = llm.bind_tools(tools)
 
     def chatbot_node(state: MessagesState):

@@ -19,3 +19,4 @@ langchain-tavily==0.2.18
 tavily-python==0.7.24
 sqlalchemy==2.0.50
 duckduckgo-search>=8.1.1
+langchain-groq>=1.1.3

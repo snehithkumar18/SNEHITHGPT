@@ -322,7 +322,7 @@
 
         .model-select {
             height: 40px;
-            max-width: 135px;
+            max-width: 170px;
             background: #262626;
             color: #ececec;
             border: 1px solid #444;
@@ -516,11 +516,10 @@
             ></textarea>
 
             <select id="modelSelect" class="model-select" title="Select model">
-                <option value="gemini-3.8-flash">gemini-3.8-flash</option>
-                <option value="gemini-3.8-pro">gemini-3.8-pro</option>
-                <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
-                <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+                <option value="openai/gpt-oss-120b" selected>Groq: GPT 120B</option>
+                <option value="openai/gpt-oss-20b">Groq: GPT 20B</option>
+                <option value="qwen/qwen3.8-27b">Groq: Qwen 27B</option>
+                <option value="gemini-3.8-flash">Google: Gemini 3.8</option>
             </select>
 
             <button class="mic-btn" id="micBtn" onclick="toggleDictation()" title="Dictate">
@@ -951,7 +950,7 @@
             stopDictation();
         }
 
-        const selectedModel = modelSelect ? modelSelect.value : "gemini-3.8-flash";
+        const selectedModel = modelSelect ? modelSelect.value : "openai/gpt-oss-120b";
 
         addMessage("user", message);
 
