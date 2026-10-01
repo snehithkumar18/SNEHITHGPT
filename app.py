@@ -226,7 +226,7 @@ async def chat_stream(request: Request):
 
     user_message = data.get("message", "")
     thread_id = data.get("thread_id", "default")
-    selected_model = data.get("model", os.getenv("DEFAULT_MODEL", "openai/gpt-oss-120b"))
+    selected_model = data.get("model", os.getenv("DEFAULT_MODEL", "openai/gpt-oss-20b"))
 
     if not user_message.strip():
         return JSONResponse(

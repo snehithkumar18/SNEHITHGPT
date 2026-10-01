@@ -21,8 +21,8 @@ from tools import tools
 Path("data").mkdir(exist_ok=True)
 
 
-# Default model: Groq 120B (Ultra fast, high uptime, zero 503 errors)
-DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "openai/gpt-oss-120b")
+# Default model: Groq 20B (High token allowance, zero 503 errors, ultra fast)
+DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "openai/gpt-oss-20b")
 
 ALLOWED_MODELS = {
     # Groq (Lightning-fast, zero 503 errors)
