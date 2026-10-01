@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  snehithgpt:
+    build: .
+    container_name: snehithgpt
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+      - ./chroma_db:/app/chroma_db
+    restart: always

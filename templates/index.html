@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BappyGPT</title>
+    <title>SnehithGPT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -453,7 +453,7 @@
 <body>
 
 <aside class="sidebar">
-    <div class="brand">BappyGPT</div>
+    <div class="brand">SnehithGPT</div>
 
     <button class="new-chat" onclick="newChat()">+ New chat</button>
 
@@ -482,7 +482,7 @@
                 Summarize uploaded document
             </div>
 
-            <div class="card" onclick="usePrompt('Remember that my channel name is dswithbappy.')">
+            <div class="card" onclick="usePrompt('Remember that my channel name is SnehithGPT.')">
                 Save something to memory
             </div>
 
@@ -516,11 +516,11 @@
             ></textarea>
 
             <select id="modelSelect" class="model-select" title="Select model">
+                <option value="gemini-3.8-flash">gemini-3.8-flash</option>
+                <option value="gemini-3.8-pro">gemini-3.8-pro</option>
                 <option value="gemini-2.5-flash">gemini-2.5-flash</option>
                 <option value="gemini-2.5-pro">gemini-2.5-pro</option>
                 <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
-                <option value="gemini-1.5-flash">gemini-1.5-flash</option>
-                <option value="gemini-1.5-pro">gemini-1.5-pro</option>
             </select>
 
             <button class="mic-btn" id="micBtn" onclick="toggleDictation()" title="Dictate">
@@ -531,7 +531,7 @@
         </div>
 
         <div class="notice" id="noticeText">
-            BappyGPT can make mistakes. Check important info.
+            SnehithGPT can make mistakes. Check important info.
         </div>
     </div>
 </main>
@@ -693,7 +693,7 @@
         statusText.textContent = "Ready";
 
         if (noticeText) {
-            noticeText.textContent = "BappyGPT can make mistakes. Check important info.";
+            noticeText.textContent = "SnehithGPT can make mistakes. Check important info.";
         }
 
         messageInput.focus();
@@ -905,7 +905,7 @@
                     Summarize uploaded document
                 </div>
 
-                <div class="card" onclick="usePrompt('Remember that my channel name is dswithbappy.')">
+                <div class="card" onclick="usePrompt('Remember that my channel name is SnehithGPT.')">
                     Save something to memory
                 </div>
 
@@ -951,7 +951,7 @@
             stopDictation();
         }
 
-        const selectedModel = modelSelect ? modelSelect.value : "gemini-2.5-flash";
+        const selectedModel = modelSelect ? modelSelect.value : "gemini-3.8-flash";
 
         addMessage("user", message);
 

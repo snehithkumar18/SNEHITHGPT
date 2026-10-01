@@ -20,21 +20,21 @@ from tools import tools
 Path("data").mkdir(exist_ok=True)
 
 
-# Update default and allowed models to use Gemini 2.5
-DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+# Update default and allowed models to use Gemini 3.8
+DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 ALLOWED_MODELS = {
-    "gemini-2.5-flash",
-    "gemini-2.5-pro",
-    "gemini-2.5-flash-lite", # Included the lite version if needed
-    "gemini-1.5-flash",      # Kept for fallback compatibility 
-    "gemini-1.5-pro"
+    "gemini-3.8-flash",
+    "gemini-3.8-pro",
+    "gemini-2.5-flash",      # Legacy fallback
+    "gemini-2.5-pro",        # Legacy fallback
+    "gemini-2.5-flash-lite", # Legacy fallback
 }
 
 
 
 SYSTEM_PROMPT = """
-You are a helpful Agentic AI assistant named BappyGPT similar to ChatGPT.
+You are a helpful Agentic AI assistant named SnehithGPT similar to ChatGPT.
 
 You can:
 1. Answer normal questions.

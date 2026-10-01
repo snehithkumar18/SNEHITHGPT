@@ -1,6 +1,6 @@
-# BappyGPT
+# SnehithGPT
 
-BappyGPT is an open-source **agentic AI chatbot** built with **Python, FastAPI, LangGraph, LangChain, Google Gemini, Tavily, ChromaDB, and SQLite**.
+SnehithGPT is an open-source **agentic AI chatbot** built with **Python, FastAPI, LangGraph, LangChain, Google Gemini, Tavily, ChromaDB, and SQLite**.
 
 It supports real-time streaming chat, document uploads, retrieval-augmented generation (RAG), web search, conversation memory, and a simple web UI.
 
@@ -13,9 +13,9 @@ It supports real-time streaming chat, document uploads, retrieval-augmented gene
 * Upload documents such as PDF, DOCX, TXT, MD, PY, and CSV
 * Use uploaded files as context through RAG
 * Search the web with Tavily for current information
-* Store and recall conversation history
+* Store and recall conversation history & long-term memory
 * Simple FastAPI-based web interface
-* Docker-ready deployment
+* Docker & Docker Compose-ready deployment
 * AWS CI/CD support using GitHub Actions, ECR, and EC2
 
 ---
@@ -28,11 +28,11 @@ This project combines:
 * **Jinja2** for rendering the frontend UI
 * **LangGraph** for agent orchestration
 * **LangChain** for tools, messages, and RAG workflow
-* **Google Gemini** as the LLM provider
+* **Google Gemini** as the LLM provider (`gemini-2.5-flash`)
 * **Tavily** for web search
 * **ChromaDB** for vector search over uploaded documents
-* **SQLite** for conversation and persistence
-* **Docker** for containerized deployment
+* **SQLite** for conversation history and persistence
+* **Docker & Docker Compose** for containerized deployment
 
 ---
 
@@ -40,7 +40,7 @@ This project combines:
 
 Make sure you have the following installed:
 
-* Python 3.11
+* Python 3.11+
 * pip or conda
 * Git
 * Google API key for Gemini
@@ -48,7 +48,7 @@ Make sure you have the following installed:
 
 Optional for deployment:
 
-* Docker
+* Docker & Docker Compose
 * AWS account
 * Amazon ECR repository
 * EC2 instance
@@ -61,30 +61,33 @@ Optional for deployment:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/entbappy/BappyGPT.git
+git clone https://github.com/YOUR_USERNAME/SnehithGPT.git
 ```
 
 ### 2. Navigate to the project directory
 
 ```bash
-cd BappyGPT
+cd SnehithGPT
 ```
 
 ### 3. Create a virtual environment
 
-Using conda:
+Using venv:
 
 ```bash
-conda create -n bappygpt python=3.11 -y
+python -m venv venv
+source venv/bin/activate  # On Linux/macOS
+# venv\Scripts\activate   # On Windows
 ```
 
-### 4. Activate the virtual environment
+Or using conda:
 
 ```bash
-conda activate bappygpt
+conda create -n snehithgpt python=3.11 -y
+conda activate snehithgpt
 ```
 
-### 5. Install dependencies
+### 4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -94,7 +97,7 @@ pip install -r requirements.txt
 
 ## Environment Variables
 
-Create a `.env` file in the project root directory.
+Create a `.env` file in the project root directory (you can copy `.env.example`):
 
 ```env
 GOOGLE_API_KEY=your_google_api_key
@@ -105,10 +108,10 @@ TAVILY_API_KEY=your_tavily_api_key
 LANGSMITH_TRACING=false
 LANGSMITH_ENDPOINT=https://api.smith.langchain.com
 LANGSMITH_API_KEY=your_langsmith_api_key
-LANGSMITH_PROJECT=bappygpt
+LANGSMITH_PROJECT=snehithgpt
 ```
 
-If you do not want to use LangSmith tracing, keep:
+If you do not want to use LangSmith tracing, set:
 
 ```env
 LANGSMITH_TRACING=false
@@ -124,6 +127,12 @@ Start the FastAPI app:
 python app.py
 ```
 
+Or using uvicorn directly:
+
+```bash
+uvicorn app:app --port 8080 --reload
+```
+
 The app will be available at:
 
 ```text
@@ -135,7 +144,7 @@ http://127.0.0.1:8080
 ## Project Structure
 
 ```text
-BappyGPT/
+SnehithGPT/
 │
 ├── app.py                  # FastAPI app and streaming chat endpoints
 ├── agent.py                # LangGraph agent setup and tool orchestration
@@ -144,7 +153,9 @@ BappyGPT/
 ├── tools.py                # Agent tools such as web search, memory, and RAG
 ├── requirements.txt        # Python dependencies
 ├── Dockerfile              # Docker image configuration
+├── docker-compose.yml     # Docker Compose configuration
 ├── .dockerignore           # Docker ignore rules
+├── .env.example            # Sample environment variables template
 │
 ├── templates/
 │   └── index.html          # Frontend UI
@@ -158,21 +169,31 @@ BappyGPT/
 
 ## Docker Deployment
 
-### 1. Build the Docker image
+### 1. Using Docker Compose (Recommended)
 
 ```bash
-docker build -t bappygpt .
+docker compose up -d --build
 ```
 
-### 2. Run the Docker container
+The app will be available at `http://localhost:8080`.
+
+### 2. Using Standard Docker Commands
+
+Build the Docker image:
+
+```bash
+docker build -t snehithgpt .
+```
+
+Run the Docker container:
 
 ```bash
 docker run -d \
-  --name bappygpt \
+  --name snehithgpt \
   --restart always \
   -p 8080:8080 \
   --env-file .env \
-  bappygpt
+  snehithgpt
 ```
 
 The app will be available at:
@@ -197,7 +218,7 @@ This project can be deployed to AWS using:
 
 ### 1. Create an IAM User
 
-Create an IAM user for deployment and attach the following policies:
+Create an IAM user for deployment in AWS and attach the following policies:
 
 ```text
 AmazonEC2ContainerRegistryFullAccess
@@ -210,18 +231,18 @@ You can also use a more restricted custom IAM policy for production.
 
 ### 2. Create an ECR Repository
 
-Create an Amazon ECR repository.
+Create an Amazon ECR repository named `snehithgpt`.
 
 Example full ECR image URI:
 
 ```text
-315865595366.dkr.ecr.us-east-1.amazonaws.com/bappygpt
+315865595366.dkr.ecr.us-east-1.amazonaws.com/snehithgpt
 ```
 
 For GitHub Secrets, only save the repository name:
 
 ```text
-ECR_REPO=bappygpt
+ECR_REPO=snehithgpt
 ```
 
 Do not save the full ECR URI as `ECR_REPO`.
@@ -327,11 +348,11 @@ Example:
 
 ```text
 AWS_DEFAULT_REGION=us-east-1
-ECR_REPO=bappygpt
+ECR_REPO=snehithgpt
 GOOGLE_MODEL=gemini-2.5-flash
 LANGSMITH_TRACING=true
 LANGSMITH_ENDPOINT=https://api.smith.langchain.com
-LANGSMITH_PROJECT=bappygpt
+LANGSMITH_PROJECT=snehithgpt
 ```
 
 ---
@@ -358,7 +379,7 @@ This workflow will:
 
 After running locally or deploying to AWS:
 
-1. Open the app in your browser.
+1. Open the app in your browser (`http://localhost:8080`).
 2. Start chatting with the AI assistant.
 3. Upload documents to use them as context.
 4. Ask questions about uploaded files.
@@ -412,4 +433,4 @@ To contribute:
 
 ## License
 
-This project is open source. Please check the repository license for usage terms.
+This project is open source under the MIT License.

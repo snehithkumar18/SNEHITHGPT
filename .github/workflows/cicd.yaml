@@ -63,8 +63,8 @@ jobs:
 
       - name: Stop and remove old container
         run: |
-          docker stop agentic-chatbot || true
-          docker rm agentic-chatbot || true
+          docker stop snehithgpt || true
+          docker rm snehithgpt || true
 
       - name: Run new Docker container
         env:
@@ -73,7 +73,7 @@ jobs:
           IMAGE_TAG: latest
         run: |
           docker run -d \
-            --name agentic-chatbot \
+            --name snehithgpt \
             --restart always \
             -p 8080:8080 \
             -e GOOGLE_API_KEY="${{ secrets.GOOGLE_API_KEY }}" \
